@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import React from 'react'
+import React, { useState } from 'react'
 import { Line, LineChart, ResponsiveContainer, YAxis, XAxis, Tooltip, Legend } from 'recharts';
 import axios from 'axios';
 
@@ -7,10 +7,12 @@ import axios from 'axios';
 
 export default function Home() {
 
-  const stocks_trigger = typeof document !== 'undefined' && document.querySelector('#stocks-tab');
-  const stocks_target = typeof document !== 'undefined' && document.querySelector('#stocks');
-  const crypto_trigger = typeof document !== 'undefined' && document.querySelector('#crypto-tab');
-  const crypto_target = typeof document !== 'undefined' && document.querySelector('#crypto');
+  const [tab, setTab] =  useState('stocks')
+
+  const handleTabChange = (e) => {
+    setTab(e.target.id)
+  }
+
 
   const data = [
     {
@@ -57,22 +59,7 @@ export default function Home() {
     }
   ]
 
-  const tabElements = [
-    {
-        id: 'stocks',
-        triggerEl: stocks_trigger,
-        targetEl: stocks_target
-    },
-    {
-        id: 'crypto',
-        triggerEl: crypto_trigger,
-        targetEl: crypto_target,
-    }
-  ];
-  
 
-  // const tabs = new Tabs(tabElements);
-  // tabs.show('stocks')
   
   
   return  (
@@ -89,33 +76,36 @@ export default function Home() {
             <div className="text-sm font-poppins font-medium text-center text-black" border-b border-gray-200> {/* Selection tab */}
               <ul className="flex flex-wrap -mb-px"  data-tabs-toggle="#input-tab">
                 <li class="mr-2">
-                  <button class="inline-block p-4 rounded-t-lg border-b-2" id="stocks-tab" data-tabs-target="#stocks" type="button" role="tab" aria-controls="stocks" aria-selected="true">Stocks</button>
+                  <button className="inline-block p-4 rounded-t-lg ${tab==='stocks' ? border-b-2 : bg-grey}" id="stocks" onClick={handleTabChange} type="button" role="tab" aria-controls="stocks" aria-selected="true">Stocks</button>
                 </li>
                 <li class="mr-2">
-                  <button class="inline-block p-4 rounded-t-lg border-b-2" id="crypto-tab" data-tabs-target="#crypto" type="button" role="tab" aria-controls="crypto" aria-selected="true">Crypto</button>
+                  <button className="inline-block p-4 rounded-t-lg ${tab==='crypto' ? border-b-2 : bg-grey}" id="crypto" onClick={handleTabChange} type="button" role="tab" aria-controls="crypto" aria-selected="true">Crypto</button>
                 </li>
               </ul>
             </div>
-
+            
             <div id="input-tab">
-              <div className="hidden p-4" id="stocks" role="tabpanel" aria-labelledby="stocks-tab" data-tabs-toggle="#stock-tab"> {/* Stocks input*/}
+            {tab === 'stocks' ? (
+              <div className="p-4" id="stocks" role="tabpanel" aria-labelledby="stocks-tab" data-tabs-toggle="#stock-tab"> {/* Stocks input*/}
                   <h1>stocks</h1>
                   <h1>stocks</h1>
                   <h1>stocks</h1>
                   <h1>stocks</h1>
               </div>
-              <div className="hidden p-4" id="crypto" role="tabpanel" aria-labelledby="crypto-tab" data-tabs-toggle="#crypto-tab"> {/* Crypto input*/}
+              ) : (
+              <div className="p-4" id="crypto" role="tabpanel" aria-labelledby="crypto-tab" data-tabs-toggle="#crypto-tab"> {/* Crypto input*/}
                 <h1>Crypto</h1>
                 <h1>Crypto</h1>
                 <h1>Crypto</h1>
                 <h1>Crypto</h1>
               </div>
+              )}
             </div>
-
+            
         </div>
 
         <div className="bg-white w-3/4 h-3/4 rounded-xl shadow-lg m-10"> {/* Paper */}
-          <div> {/* Value chart */}
+          <div className="m-3"> {/* Value chart */}
             <ResponsiveContainer width={1300} height={500} >
                 <LineChart width="100%" height="100%" data={data}>
                   <XAxis dataKey="name" />
